@@ -1,0 +1,29 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Publish to Medium
+
+"on":
+  push:
+    branches:
+      - main
+    paths:
+      - 'output/**'
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Pushes to public repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@ssh-deploy-key
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.WORKFLOW_DEPLOY_KEY }}
+        with:
+          source-directory: output/
+          destination-github-username: 'shappoff'
+          destination-repository-name: 'mock-medium-output'
+          user-email: shappoff@gmail.com
+          commit-message: pushed from $GITHUB_REF
+          target-branch: main
